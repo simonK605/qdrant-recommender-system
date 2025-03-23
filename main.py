@@ -68,5 +68,21 @@ result = client.search(
     limit=10,
 )
 
-print(result)
+aussie_songs = models.Filter(
+    must=[
+        models.FieldCondition(
+            key="country",
+            match=models.MatchValue(value="Australia")
+        )
+    ]
+)
 
+result = client.search(
+    collection_name=my_collection,
+    query_vector=living_la_vida_loca,
+    query_filter=aussie_songs,
+    limit=3,
+)
+
+
+print(result)
