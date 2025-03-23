@@ -34,3 +34,39 @@ client.retrieve(
     ids=[10, 14, 500],
 #     with_vectors=True,
 )
+
+fake_something = Faker()
+payload = []
+
+for i in range(1000):
+    payload.append(
+        {
+            "id": i,
+            "artist": fake_something.name(),
+            "song": " ".join(fake_something.words()),
+            "url_song": fake_something.url(),
+            "country": fake_something.country(),
+        }
+    )
+
+client.upsert(
+    collection_name=my_collection,
+    points=models.Batch(
+        ids=index,
+        vectors=data.tolist(),
+        payloads=payload
+    )
+)
+
+# Semantic search
+
+living_la_vida_loca = np.random.uniform(low=-1.0, high=1.0, size=(100)).tolist()
+
+result = client.search(
+    collection_name=my_collection,
+    query_vector=living_la_vida_loca,
+    limit=10,
+)
+
+print(result)
+
